@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NapasJalan.co - Smart Travel Planner Indonesia</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Click Sound -->
+    <audio id="clickSound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Floating Bubbles Container -->
+    <div class="bubbles-container" id="bubblesContainer"></div>
+
+    <!-- Cursor Trail -->
+    <div class="cursor-trail" id="cursorTrail"></div>
+
+    <!-- Music Toggle Button -->
+    <button class="music-toggle" id="musicToggle" onclick="toggleMusic()">
+        <span class="music-icon">🔇</span>
+        <span class="music-text">Music</span>
+    </button>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="loader-content">
+            <div class="loader-logo">
+                <img src="logo.png" alt="NapasJalan" class="loader-img">
+            </div>
+            <div class="loader-text">NapasJalan.co</div>
+            <div class="loader-bar"><div class="loader-progress"></div></div>
+            <p class="loader-subtitle">Memuat pengalaman terbaik untuk Anda...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <img src="logo.png" alt="NapasJalan" class="logo-img">
+                <span class="logo-text">NapasJalan<span class="logo-dot">.co</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active" onclick="playClick()">Home</a></li>
+                <li><a href="#features" class="nav-link" onclick="playClick()">Features</a></li>
+                <li><a href="#templates" class="nav-link" onclick="playClick()">Templates</a></li>
+                <li><a href="#reviews" class="nav-link" onclick="playClick()">Reviews</a></li>
+                <li><a href="#planner" class="nav-link" onclick="playClick()">Planner</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="user-btn" id="userBtn" onclick="showLoginModal(); playClick();">
+                    <span class="user-icon">👤</span>
+                    <span class="user-text">Sign In</span>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu(); playClick();">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li><a href="#home" onclick="toggleMobileMenu(); playClick();">Home</a></li>
+            <li><a href="#features" onclick="toggleMobileMenu(); playClick();">Features</a></li>
+            <li><a href="#templates" onclick="toggleMobileMenu(); playClick();">Templates</a></li>
+            <li><a href="#reviews" onclick="toggleMobileMenu(); playClick();">Reviews</a></li>
+            <li><a href="#planner" onclick="toggleMobileMenu(); playClick();">Planner</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="floating-shapes">
+                <div class="shape shape-1">🌴</div>
+                <div class="shape shape-2">✈️</div>
+                <div class="shape shape-3">🏖️</div>
+                <div class="shape shape-4">🗺️</div>
+                <div class="shape shape-5">🎒</div>
+                <div class="shape shape-6">🌺</div>
+                <div class="shape shape-7">⛱️</div>
+                <div class="shape shape-8">🚗</div>
+            </div>
+            <div class="particles" id="particles"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <span class="badge-icon">🌟</span>
+                    <span>Platform Travel Planner #1 Indonesia</span>
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-line">Rencanakan</span>
+                    <span class="title-line gradient-text">Perjalanan Impian</span>
+                    <span class="title-line">Bersama Teman!</span>
+                </h1>
+                <p class="hero-subtitle">Platform perencanaan perjalanan dengan fitur kolaborasi real-time, drag & drop planning, budget tracker, dan export PDF profesional. Gratis selamanya! 🎉</p>
+                
+                <div class="hero-search">
+                    <div class="search-box">
+                        <div class="search-field">
+                            <span class="field-icon">📍</span>
+                            <input type="text" id="heroDestination" placeholder="Mau kemana hari ini?">
+                        </div>
+                        <div class="search-divider"></div>
+                        <div class="search-field">
+                            <span class="field-icon">📅</span>
+                            <input type="date" id="heroStartDate">
+                        </div>
+                        <div class="search-divider"></div>
+                        <div class="search-field">
+                            <span class="field-icon">📅</span>
+                            <input type="date" id="heroEndDate">
+                        </div>
+                        <button class="search-btn" onclick="startPlanning(); playClick();">
+                            <span>Mulai Planning</span>
+                            <span class="btn-emoji">🚀</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-card" onclick="playClick()">
+                        <div class="stat-icon">🗺️</div>
+                        <span class="stat-value" data-count="15000">0</span>
+                        <span class="stat-label">Trip Dibuat</span>
+                    </div>
+                    <div class="stat-card" onclick="playClick()">
+                        <div class="stat-icon">😊</div>
+                        <span class="stat-value" data-count="50000">0</span>
+                        <span class="stat-label">Travelers Happy</span>
+                    </div>
+                    <div class="stat-card" onclick="playClick()">
+                        <div class="stat-icon">🏝️</div>
+                        <span class="stat-value" data-count="500">0</span>
+                        <span class="stat-label">Destinasi</span>
+                    </div>
+                    <div class="stat-card" onclick="playClick()">
+                        <div class="stat-icon">⭐</div>
+                        <span class="stat-value" data-count="4.9">0</span>
+                        <span class="stat-label">Rating</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="visual-card main-card">
+                    <div class="card-header">
+                        <span class="card-emoji">🗺️</span>
+                        <span>Trip ke Bali</span>
+                        <span class="collab-badge">👥 3 orang</span>
+                    </div>
+                    <div class="card-destinations">
+                        <div class="dest-item"><span class="dest-emoji">🏖️</span><span>Pantai Kuta</span></div>
+                        <div class="dest-item"><span class="dest-emoji">🏯</span><span>Tanah Lot</span></div>
+                        <div class="dest-item"><span class="dest-emoji">🌾</span><span>Tegallalang</span></div>
+                    </div>
+                    <div class="card-progress">
+                        <div class="progress-bar"><div class="progress-fill" style="width: 65%"></div></div>
+                        <span>65% Complete</span>
+                    </div>
+                </div>
+                <div class="visual-card float-card-1">
+                    <span class="float-emoji">🎒</span>
+                    <span class="float-text">Adventure Ready!</span>
+                </div>
+                <div class="visual-card float-card-2">
+                    <span class="float-emoji">💰</span>
+                    <span class="float-text">Budget: Rp 5jt</span>
+                </div>
+                <div class="visual-card float-card-3">
+                    <span class="float-emoji">👥</span>
+                    <span class="float-text">Kolaborasi!</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator" onclick="playClick()">
+            <span>Scroll untuk explore</span>
+            <div class="scroll-mouse">
+                <div class="scroll-wheel"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">✨ Fitur Unggulan</span>
+                <h2 class="section-title">Semua yang Anda Butuhkan<br>untuk <span class="gradient-text">Trip Sempurna</span></h2>
+                <p class="section-desc">Tools canggih untuk merencanakan perjalanan dengan mudah dan profesional</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card gradient-1" onclick="playClick()">
+                    <div class="feature-emoji">🎯</div>
+                    <h3>Drag & Drop Planning</h3>
+                    <p>Susun itinerary dengan mudah, geser aktivitas sesuai keinginan</p>
+                    <div class="feature-badge">Popular</div>
+                </div>
+
+                <div class="feature-card gradient-2" onclick="playClick()">
+                    <div class="feature-emoji">👥</div>
+                    <h3>Kolaborasi Tim</h3>
+                    <p>Undang teman via email dan rencanakan trip bersama real-time</p>
+                    <div class="feature-badge new">New!</div>
+                </div>
+
+                <div class="feature-card gradient-3" onclick="playClick()">
+                    <div class="feature-emoji">💰</div>
+                    <h3>Smart Budget Tracker</h3>
+                    <p>Lacak pengeluaran dengan diagram visual yang interaktif</p>
+                </div>
+
+                <div class="feature-card gradient-4" onclick="playClick()">
+                    <div class="feature-emoji">📄</div>
+                    <h3>Export PDF Pro</h3>
+                    <p>Cetak itinerary dengan desain profesional tanpa emoji rusak</p>
+                </div>
+
+                <div class="feature-card gradient-5" onclick="playClick()">
+                    <div class="feature-emoji">⏱️</div>
+                    <h3>Time Tracking</h3>
+                    <p>Atur jadwal dengan waktu mulai dan selesai yang detail</p>
+                </div>
+
+                <div class="feature-card gradient-6" onclick="playClick()">
+                    <div class="feature-emoji">🗓️</div>
+                    <h3>Multi-Day Support</h3>
+                    <p>Kelola banyak hari dengan mudah, tambah & hapus sesuai kebutuhan</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews" id="reviews">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">💬 Testimonial</span>
+                <h2 class="section-title">Apa Kata Mereka<br>Tentang <span class="gradient-text">NapasJalan</span></h2>
+                <p class="section-desc">Ribuan traveler sudah merasakan kemudahan planning dengan platform kami</p>
+            </div>
+
+            <div class="reviews-grid">
+                <div class="review-card" onclick="playClick()">
+                    <div class="review-header">
+                        <div class="reviewer-avatar gradient-1">AS</div>
+                        <div class="reviewer-info">
+                            <h4>Andi Saputra</h4>
+                            <p>Travel Blogger</p>
+                        </div>
+                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">"NapasJalan memudahkan saya planning trip ke Raja Ampat. Fitur kolaborasinya mantap banget, bisa ajak teman-teman planning bareng!"</p>
+                    <div class="review-trip">
+                        <span class="trip-icon">🏝️</span>
+                        <span>Trip ke Raja Ampat - 7 Hari</span>
+                    </div>
+                </div>
+
+                <div class="review-card featured" onclick="playClick()">
+                    <div class="featured-badge">⭐ Top Review</div>
+                    <div class="review-header">
+                        <div class="reviewer-avatar gradient-2">DM</div>
+                        <div class="reviewer-info">
+                            <h4>Dewi Maharani</h4>
+                            <p>Content Creator</p>
+                        </div>
+                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">"Export PDF-nya keren banget! Desainnya profesional dan bisa langsung di-print. Budget tracker-nya juga sangat membantu untuk manage pengeluaran."</p>
+                    <div class="review-trip">
+                        <span class="trip-icon">🏔️</span>
+                        <span>Trip ke Bromo - 3 Hari</span>
+                    </div>
+                </div>
+
+                <div class="review-card" onclick="playClick()">
+                    <div class="review-header">
+                        <div class="reviewer-avatar gradient-3">RH</div>
+                        <div class="reviewer-info">
+                            <h4>Rizky Hidayat</h4>
+                            <p>Software Engineer</p>
+                        </div>
+                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">"Drag & drop-nya smooth banget! Sebagai orang IT, saya appreciate banget UX-nya yang user friendly. Highly recommended!"</p>
+                    <div class="review-trip">
+                        <span class="trip-icon">🏖️</span>
+                        <span>Trip ke Bali - 5 Hari</span>
+                    </div>
+                </div>
+
+                <div class="review-card" onclick="playClick()">
+                    <div class="review-header">
+                        <div class="reviewer-avatar gradient-4">SF</div>
+                        <div class="reviewer-info">
+                            <h4>Sarah Fitriani</h4>
+                            <p>Marketing Manager</p>
+                        </div>
+                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">"Fitur templatenya sangat membantu! Tidak perlu ribet mikir dari nol. Tinggal pilih template, customize sedikit, dan siap berangkat!"</p>
+                    <div class="review-trip">
+                        <span class="trip-icon">🌸</span>
+                        <span>Trip ke Jogja - 4 Hari</span>
+                    </div>
+                </div>
+
+                <div class="review-card" onclick="playClick()">
+                    <div class="review-header">
+                        <div class="reviewer-avatar gradient-5">BP</div>
+                        <div class="reviewer-info">
+                            <h4>Budi Prasetyo</h4>
+                            <p>Photographer</p>
+                        </div>
+                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">"Sebagai fotografer yang sering traveling, NapasJalan jadi andalan. Time tracking-nya detail banget, jadi tau kapan golden hour di tiap lokasi."</p>
+                    <div class="review-trip">
+                        <span class="trip-icon">🌋</span>
+                        <span>Trip ke Kawah Ijen - 2 Hari</span>
+                    </div>
+                </div>
+
+                <div class="review-card" onclick="playClick()">
+                    <div class="review-header">
+                        <div class="reviewer-avatar gradient-6">NA</div>
+                        <div class="reviewer-info">
+                            <h4>Nina Anggraini</h4>
+                            <p>Tour Guide</p>
+                        </div>
+                        <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <p class="review-text">"Saya pakai NapasJalan untuk bikin itinerary klien. Hasilnya profesional dan klien selalu puas. Terima kasih NapasJalan!"</p>
+                    <div class="review-trip">
+                        <span class="trip-icon">🏝️</span>
+                        <span>Trip ke Lombok - 6 Hari</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Templates Section -->
+    <section class="templates" id="templates">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">🎨 Template Siap Pakai</span>
+                <h2 class="section-title">Mulai dengan Template<br>dari <span class="gradient-text">Traveler Berpengalaman</span></h2>
+                <p class="section-desc">Pilih template dan sesuaikan dengan kebutuhan perjalanan Anda</p>
+            </div>
+
+            <div class="templates-filter">
+                <button class="filter-btn active" data-filter="all" onclick="playClick()">🌟 Semua</button>
+                <button class="filter-btn" data-filter="beach" onclick="playClick()">🏖️ Pantai</button>
+                <button class="filter-btn" data-filter="culture" onclick="playClick()">🏛️ Budaya</button>
+                <button class="filter-btn" data-filter="adventure" onclick="playClick()">🏔️ Adventure</button>
+                <button class="filter-btn" data-filter="luxury" onclick="playClick()">💎 Luxury</button>
+            </div>
+
+            <div class="templates-grid">
+                <div class="template-card" data-category="beach adventure" data-template="bali" onclick="playClick()">
+                    <div class="template-image bali">
+                        <div class="template-emoji">🏝️</div>
+                        <div class="template-overlay">
+                            <button class="preview-btn" onclick="previewTemplate('bali'); event.stopPropagation();">👁️ Preview</button>
+                        </div>
+                        <div class="template-badge">🔥 Popular</div>
+                    </div>
+                    <div class="template-info">
+                        <div class="template-meta">
+                            <span class="meta-item">📅 5 Hari</span>
+                            <span class="meta-item">💰 Rp 5-8 Juta</span>
+                        </div>
+                        <h3>Bali Adventure</h3>
+                        <p>Temple, pantai, sawah, dan sunset terbaik di Bali</p>
+                        <button class="use-template-btn" onclick="useTemplate('bali'); event.stopPropagation();">
+                            <span>Gunakan Template</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-category="culture" data-template="jogja" onclick="playClick()">
+                    <div class="template-image jogja">
+                        <div class="template-emoji">🏛️</div>
+                        <div class="template-overlay">
+                            <button class="preview-btn" onclick="previewTemplate('jogja'); event.stopPropagation();">👁️ Preview</button>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <div class="template-meta">
+                            <span class="meta-item">📅 3 Hari</span>
+                            <span class="meta-item">💰 Rp 3-5 Juta</span>
+                        </div>
+                        <h3>Jogja Cultural Tour</h3>
+                        <p>Candi Borobudur, Prambanan, Malioboro</p>
+                        <button class="use-template-btn" onclick="useTemplate('jogja'); event.stopPropagation();">
+                            <span>Gunakan Template</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-category="luxury adventure" data-template="rajaampat" onclick="playClick()">
+                    <div class="template-image raja-ampat">
+                        <div class="template-emoji">🤿</div>
+                        <div class="template-overlay">
+                            <button class="preview-btn" onclick="previewTemplate('rajaampat'); event.stopPropagation();">👁️ Preview</button>
+                        </div>
+                        <div class="template-badge premium">💎 Premium</div>
+                    </div>
+                    <div class="template-info">
+                        <div class="template-meta">
+                            <span class="meta-item">📅 7 Hari</span>
+                            <span class="meta-item">💰 Rp 15-25 Juta</span>
+                        </div>
+                        <h3>Raja Ampat Diving</h3>
+                        <p>Diving world-class dan island hopping</p>
+                        <button class="use-template-btn" onclick="useTemplate('rajaampat'); event.stopPropagation();">
+                            <span>Gunakan Template</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-category="adventure" data-template="bromo" onclick="playClick()">
+                    <div class="template-image bromo">
+                        <div class="template-emoji">🌋</div>
+                        <div class="template-overlay">
+                            <button class="preview-btn" onclick="previewTemplate('bromo'); event.stopPropagation();">👁️ Preview</button>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <div class="template-meta">
+                            <span class="meta-item">📅 3 Hari</span>
+                            <span class="meta-item">💰 Rp 2-4 Juta</span>
+                        </div>
+                        <h3>Bromo Sunrise</h3>
+                        <p>Sunrise epik dan jeep adventure</p>
+                        <button class="use-template-btn" onclick="useTemplate('bromo'); event.stopPropagation();">
+                            <span>Gunakan Template</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-category="beach luxury" data-template="lombok" onclick="playClick()">
+                    <div class="template-image lombok">
+                        <div class="template-emoji">🏄</div>
+                        <div class="template-overlay">
+                            <button class="preview-btn" onclick="previewTemplate('lombok'); event.stopPropagation();">👁️ Preview</button>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <div class="template-meta">
+                            <span class="meta-item">📅 5 Hari</span>
+                            <span class="meta-item">💰 Rp 6-10 Juta</span>
+                        </div>
+                        <h3>Lombok & Gili Islands</h3>
+                        <p>Gili Trawangan dan snorkeling</p>
+                        <button class="use-template-btn" onclick="useTemplate('lombok'); event.stopPropagation();">
+                            <span>Gunakan Template</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-category="culture" data-template="bandung" onclick="playClick()">
+                    <div class="template-image bandung">
+                        <div class="template-emoji">🌿</div>
+                        <div class="template-overlay">
+                            <button class="preview-btn" onclick="previewTemplate('bandung'); event.stopPropagation();">👁️ Preview</button>
+                        </div>
+                        <div class="template-badge new">✨ New</div>
+                    </div>
+                    <div class="template-info">
+                        <div class="template-meta">
+                            <span class="meta-item">📅 2 Hari</span>
+                            <span class="meta-item">💰 Rp 1-2 Juta</span>
+                        </div>
+                        <h3>Bandung Getaway</h3>
+                        <p>Kawah Putih dan factory outlet</p>
+                        <button class="use-template-btn" onclick="useTemplate('bandung'); event.stopPropagation();">
+                            <span>Gunakan Template</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Planner Section -->
+    <section class="planner" id="planner">
+        <div class="planner-container">
+            <!-- Planner Header -->
+            <div class="planner-header">
+                <div class="planner-title">
+                    <span class="planner-emoji">🗓️</span>
+                    <h2>Trip Planner</h2>
+                </div>
+                <div class="planner-actions">
+                    <button class="action-btn collab-btn" onclick="showCollabModal(); playClick();">
+                        <span class="btn-emoji">👥</span>
+                        <span>Kolaborasi</span>
+                    </button>
+                    <button class="action-btn" onclick="playClick()">
+                        <span class="btn-emoji">📊</span>
+                        <span>Budget</span>
+                    </button>
+                    <button class="action-btn primary" onclick="exportPDF(); playClick();">
+                        <span class="btn-emoji">📥</span>
+                        <span>Export PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Collaborators Display -->
+            <div class="collaborators-bar" id="collaboratorsBar" style="display: none;">
+                <div class="collab-label">
+                    <span>👥</span>
+                    <span>Collaborators:</span>
+                </div>
+                <div class="collab-avatars" id="collabAvatars"></div>
+                <button class="add-collab-btn" onclick="showCollabModal(); playClick();">+ Invite</button>
+            </div>
+
+            <!-- Lock Overlay -->
+            <div class="planner-lock" id="plannerLock">
+                <div class="lock-content">
+                    <div class="lock-emoji">🔐</div>
+                    <h3>Login untuk Mulai Planning</h3>
+                    <p>Buat akun gratis untuk menyimpan dan kolaborasi trip</p>
+                    <button class="unlock-btn" onclick="showLoginModal(); playClick();">
+                        <span>Login / Daftar Gratis</span>
+                        <span>🚀</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Planner Body -->
+            <div class="planner-body">
+                <!-- Left Sidebar -->
+                <aside class="planner-sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <span>📋</span>
+                            Detail Trip
+                        </h3>
+                        <div class="form-group">
+                            <label>Nama Trip</label>
+                            <input type="text" id="tripName" placeholder="Trip Seru ke Bali">
+                        </div>
+                        <div class="form-group">
+                            <label>Destinasi</label>
+                            <input type="text" id="destination" placeholder="Bali, Indonesia">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tanggal Mulai</label>
+                                <input type="date" id="startDate">
+                            </div>
+                            <div class="form-group">
+                                <label>Tanggal Selesai</label>
+                                <input type="date" id="endDate">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Budget (Rp)</label>
+                                <input type="number" id="totalBudget" placeholder="5000000">
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah Orang</label>
+                                <input type="number" id="travelers" value="2" min="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget Overview -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <span>💰</span>
+                            Budget Overview
+                        </h3>
+                        <div class="budget-chart-container">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
+                        <div class="budget-summary">
+                            <div class="budget-row">
+                                <span class="budget-dot transport"></span>
+                                <span class="budget-label">Transport</span>
+                                <span class="budget-value" id="transportTotal">Rp 0</span>
+                            </div>
+                            <div class="budget-row">
+                                <span class="budget-dot accommodation"></span>
+                                <span class="budget-label">Penginapan</span>
+                                <span class="budget-value" id="accommodationTotal">Rp 0</span>
+                            </div>
+                            <div class="budget-row">
+                                <span class="budget-dot food"></span>
+                                <span class="budget-label">Makanan</span>
+                                <span class="budget-value" id="foodTotal">Rp 0</span>
+                            </div>
+                            <div class="budget-row">
+                                <span class="budget-dot activities"></span>
+                                <span class="budget-label">Aktivitas</span>
+                                <span class="budget-value" id="activitiesTotal">Rp 0</span>
+                            </div>
+                            <div class="budget-total">
+                                <span>Total Pengeluaran</span>
+                                <span id="totalSpent">Rp 0</span>
+                            </div>
+                            <div class="budget-remaining">
+                                <span>Sisa Budget</span>
+                                <span id="remainingBudget">Rp 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Itinerary Area -->
+                <main class="planner-main">
+                    <!-- Day Tabs -->
+                    <div class="day-navigation">
+                        <div class="day-tabs-wrapper">
+                            <div class="day-tabs" id="dayTabs"></div>
+                        </div>
+                        <button class="add-day-btn" onclick="addNewDay(); playClick();">
+                            <span>+ Tambah Hari</span>
+                        </button>
+                    </div>
+
+                    <!-- Day Content -->
+                    <div class="days-content" id="daysContent"></div>
+                </main>
+
+                <!-- Right Sidebar -->
+                <aside class="planner-right-sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <span>🔍</span>
+                            Discover Places
+                        </h3>
+                        <div class="discover-list" id="discoverList">
+                            <div class="discover-card" onclick="addPlaceToItinerary('Pantai Kuta', 50000); playClick();">
+                                <div class="discover-emoji">🏖️</div>
+                                <div class="discover-info">
+                                    <h4>Pantai Kuta</h4>
+                                    <p>⭐ 4.5 • Bali</p>
+                                </div>
+                                <button class="add-place-btn">+</button>
+                            </div>
+                            <div class="discover-card" onclick="addPlaceToItinerary('Tanah Lot Temple', 60000); playClick();">
+                                <div class="discover-emoji">🏯</div>
+                                <div class="discover-info">
+                                    <h4>Tanah Lot</h4>
+                                    <p>⭐ 4.8 • Tabanan</p>
+                                </div>
+                                <button class="add-place-btn">+</button>
+                            </div>
+                            <div class="discover-card" onclick="addPlaceToItinerary('Tegallalang Rice', 35000); playClick();">
+                                <div class="discover-emoji">🌾</div>
+                                <div class="discover-info">
+                                    <h4>Tegallalang</h4>
+                                    <p>⭐ 4.6 • Ubud</p>
+                                </div>
+                                <button class="add-place-btn">+</button>
+                            </div>
+                            <div class="discover-card" onclick="addPlaceToItinerary('Monkey Forest', 80000); playClick();">
+                                <div class="discover-emoji">🐒</div>
+                                <div class="discover-info">
+                                    <h4>Monkey Forest</h4>
+                                    <p>⭐ 4.4 • Ubud</p>
+                                </div>
+                                <button class="add-place-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weather Widget -->
+                    <div class="sidebar-section weather-widget">
+                        <h3 class="sidebar-title">
+                            <span>☀️</span>
+                            Cuaca
+                        </h3>
+                        <div class="weather-current">
+                            <div class="weather-emoji">🌤️</div>
+                            <div class="weather-temp">28°C</div>
+                            <div class="weather-desc">Cerah Berawan</div>
+                        </div>
+                        <div class="weather-forecast">
+                            <div class="forecast-day">
+                                <span>Sen</span>
+                                <span>☀️</span>
+                                <span>32°</span>
+                            </div>
+                            <div class="forecast-day">
+                                <span>Sel</span>
+                                <span>⛅</span>
+                                <span>30°</span>
+                            </div>
+                            <div class="forecast-day">
+                                <span>Rab</span>
+                                <span>🌧️</span>
+                                <span>28°</span>
+                            </div>
+                            <div class="forecast-day">
+                                <span>Kam</span>
+                                <span>⛈️</span>
+                                <span>27°</span>
+                            </div>
+                            <div class="forecast-day">
+                                <span>Jum</span>
+                                <span>☀️</span>
+                                <span>31°</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <img src="logo.png" alt="NapasJalan" class="footer-logo-img">
+                        <span class="logo-text">NapasJalan<span class="logo-dot">.co</span></span>
+                    </div>
+                    <p>Platform perencanaan perjalanan terlengkap untuk petualangan Anda di Indonesia. Gratis selamanya!</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/napasjalan" class="social-link" target="_blank" onclick="playClick()">📷</a>
+                        <a href="https://facebook.com/napasjalan" class="social-link" target="_blank" onclick="playClick()">📘</a>
+                        <a href="https://twitter.com/napasjalan" class="social-link" target="_blank" onclick="playClick()">🐦</a>
+                        <a href="https://youtube.com/napasjalan" class="social-link" target="_blank" onclick="playClick()">📺</a>
+                        <a href="https://tiktok.com/@napasjalan" class="social-link" target="_blank" onclick="playClick()">🎵</a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>Produk</h4>
+                        <a href="#features" onclick="playClick()">Fitur</a>
+                        <a href="#templates" onclick="playClick()">Templates</a>
+                        <a href="#planner" onclick="playClick()">Trip Planner</a>
+                        <a href="#" onclick="playClick()">Mobile App</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Perusahaan</h4>
+                        <a href="#" onclick="playClick()">Tentang Kami</a>
+                        <a href="#" onclick="playClick()">Blog</a>
+                        <a href="#" onclick="playClick()">Karir</a>
+                        <a href="#" onclick="playClick()">Press Kit</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Kontak</h4>
+                        <a href="mailto:hello@napasjalan.co" onclick="playClick()">📧 hello@napasjalan.co</a>
+                        <a href="https://wa.me/6281234567890" onclick="playClick()">📱 +62 812-3456-7890</a>
+                        <a href="#" onclick="playClick()">📍 Jakarta, Indonesia</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 NapasJalan.co - All rights reserved. Made with ❤️ in Indonesia</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-backdrop" onclick="closeLoginModal()"></div>
+        <div class="modal-content login-modal">
+            <button class="modal-close" onclick="closeLoginModal(); playClick();">×</button>
+            <div class="login-header">
+                <img src="logo.png" alt="NapasJalan" class="login-logo-img">
+                <h2>Selamat Datang! 👋</h2>
+                <p>Login untuk mulai planning trip impian Anda</p>
+            </div>
+            <div class="login-tabs">
+                <button class="login-tab active" data-tab="login" onclick="playClick()">Login</button>
+                <button class="login-tab" data-tab="register" onclick="playClick()">Daftar</button>
+            </div>
+            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Masukkan password" required>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Ingat saya</span>
+                    </label>
+                    <a href="#" class="forgot-link">Lupa password?</a>
+                </div>
+                <button type="submit" class="login-submit" onclick="playClick()">
+                    <span>Login</span>
+                    <span>🚀</span>
+                </button>
+            </form>
+            <form class="register-form" id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="registerName" placeholder="Nama lengkap" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" placeholder="email@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" placeholder="Min. 6 karakter" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Konfirmasi Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Ulangi password" required>
+                </div>
+                <button type="submit" class="login-submit" onclick="playClick()">
+                    <span>Daftar Sekarang</span>
+                    <span>🎉</span>
+                </button>
+            </form>
+            <div class="login-divider"><span>atau</span></div>
+            <div class="social-login-btns">
+                <button class="social-login-btn google" onclick="socialLogin('google'); playClick();">
+                    <span>G</span>
+                    <span>Google</span>
+                </button>
+                <button class="social-login-btn facebook" onclick="socialLogin('facebook'); playClick();">
+                    <span>f</span>
+                    <span>Facebook</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collaboration Modal -->
+    <div class="modal" id="collabModal">
+        <div class="modal-backdrop" onclick="closeCollabModal()"></div>
+        <div class="modal-content collab-modal">
+            <button class="modal-close" onclick="closeCollabModal(); playClick();">×</button>
+            <div class="collab-header">
+                <div class="collab-emoji">👥</div>
+                <h2>Undang Kolaborator</h2>
+                <p>Ajak teman-teman untuk planning trip bersama!</p>
+            </div>
+            <form class="collab-form" onsubmit="inviteCollaborator(event)">
+                <div class="form-group">
+                    <label>Email Teman</label>
+                    <input type="email" id="collabEmail" placeholder="teman@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Pesan (Opsional)</label>
+                    <textarea id="collabMessage" placeholder="Ayo planning trip bareng!"></textarea>
+                </div>
+                <button type="submit" class="collab-submit" onclick="playClick()">
+                    <span>Kirim Undangan</span>
+                    <span>📨</span>
+                </button>
+            </form>
+            <div class="collab-list">
+                <h4>Collaborators saat ini:</h4>
+                <div id="currentCollaborators">
+                    <p class="no-collab">Belum ada collaborator. Undang teman sekarang!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Preview Modal -->
+    <div class="modal" id="templateModal">
+        <div class="modal-backdrop" onclick="closeTemplateModal()"></div>
+        <div class="modal-content template-modal">
+            <button class="modal-close" onclick="closeTemplateModal(); playClick();">×</button>
+            <div class="template-preview" id="templatePreview"></div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
